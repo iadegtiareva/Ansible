@@ -1,0 +1,2 @@
+[vmcreate]
+ans-test-dev disk='10' datastore='DS-scaleio-test3' network='DMZ_232_Test_Dev' memory='1024' cpucount='2' osid='centos64Guest'
