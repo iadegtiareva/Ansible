@@ -11,9 +11,9 @@
      promt: "Enter password"
      private: yes
   vars:
-     vc_hostname: 'vsphere5.esphere.local'
-     datacenter: 'Виртуальный ДЦ для непром. стендов'
-     esxhost: 'esxi-ibm2.esphere.local'
+     vc_hostname: 'blabla'
+     datacenter: 'blabla'
+     esxhost: 'blabla'
      vm_name: 'ans-test-dev'
      vmtemplate: 'template-centOS7'
      folder: 'ENV_DEV'
@@ -41,7 +41,7 @@
            scsi: paravirtual
          networks:
          - name: DMZ_232_Test_Dev
-           ip: 172.17.232.25
+           ip: 172.17.nnn.nnn
            netmask: 255.255.255.0
          template: "{{ vmtemplate }}"
          wait_for_ip_address: yes
