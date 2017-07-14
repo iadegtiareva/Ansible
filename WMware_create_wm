@@ -1,55 +1,50 @@
 ---
-# Create a new VM with OS from a template CentOS7
-- hosts: vmcreate
-  gather_facts: false
+#Create a new VM with OS from a template CentOS
+- hosts: localhost
+  connection: local
+  gather_facts: False
   vars_prompt:
-  - name: "vc_user"
-    prompt: "Enter username"
-    private: no
-  - name: "vc_pass"
-    promt: "Enter password"
-    private: yes
+   - name: "vc_user"
+     prompt: "Enter username"
+     private: no
+   - name: "vc_pass"
+     promt: "Enter password"
+     private: yes
   vars:
-    vc_hostname: 'vsphere5.esphere.local'
-    datacenter: 'Виртуальный ДЦ для непром. стендов'
-    esxhost: 'esxi-ibm2.esphere.local'
-    guest_name: 'ans-test-dev'
-    vmtemplate: 'template-centOS7'
-    folder: 'ENV_DEV'
-    notes: 'IT-blablabla 172.17.***.***'
+     vc_hostname: 'vsphere5.esphere.local'
+     datacenter: 'Виртуальный ДЦ для непром. стендов'
+     esxhost: 'esxi-ibm2.esphere.local'
+     vm_name: 'ans-test-dev'
+     vmtemplate: 'template-centOS7'
+     folder: 'ENV_DEV'
+     notes: 'IT-blablabla 172.17.***.***'
   tasks:
-    - vsphere_guest:
+   - vmware_guest:
          validate_certs: no
-         vcenter_hostname: "{{ vc_hostname }}"
+         hostname: "{{ vc_hostname }}"
          username: "{{ vc_user }}"
          password: "{{ vc_pass }}"
-         esxi:
-           datacenter: "{{ datacenter }}"
-           hostname: "{{ esxhost }}"
-         guest: "{{ guest_name }}"
-         from_template: yes
-         template_src: "{{ vmtemplate }}"
-         #resource_pool: "/Resources"
-#Reconfigure the CPU and Memory on the newly created VM
-         vm_extra_config:
-           folder: "{{ folder }}"
-           notes: "{{ notes }}"
-         vm_disk:
-           disk1:
-             size_gb: "{{ disk }}"
-             type: thin
-             datastore: "{{ datastore }}"
-         vm_hardware:
-           memory_mb: "{{ memory }}"
-           num_cpus: "{{ cpucount }}"
-           osid: "{{ osid }}"
+         esxi_hostname: "{{ esxhost }}"
+         datacenter: "{{ datacenter }}"
+         name: "{{vm_name}}"
+         state: poweredon
+         guest_id: centos64guest
+         folder: "{{ folder }}"
+         annotation: "{{ notes }}"
+         disk:
+         - size_gb: 10
+           type: thin
+           datastore: 'DS-scaleio-test3'
+         hardware:
+           memory_mb: 1024
+           num_cpus: 2
            scsi: paravirtual
-         vm_nic:
-           nic1:
-             type: vmxnet3
-			 network: "{{ network }}"
-             network_type: standart
+         networks:
+         - name: DMZ_232_Test_Dev
+           ip: 172.17.232.25
+           netmask: 255.255.255.0
+         template: "{{ vmtemplate }}"
          wait_for_ip_address: yes
-         state: powered_off
-         #register: deploy
+     delegate_to: localhost
+     register: deploy
 ...
